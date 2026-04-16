@@ -4,7 +4,7 @@ export const products: Product[] = [
   {
     id: 'prod_001',
     name: 'Teclado Mecánico RGB',
-    description: 'Teclado mecánico retroiluminado con switches Gateron Brown, diseño ergonómico y 104 teclas. Ideal para gaming y trabajo.',
+    description: 'Teclado mecánico retroiluminado con switches Gateron Brown, diseño ergonómico y 104 teclas. Ideal para gaming y trabajo prolongado.',
     price: 89.99,
     imageId: 'keyboard',
     stock: 15,
@@ -13,7 +13,7 @@ export const products: Product[] = [
   {
     id: 'prod_002',
     name: 'Ratón Inalámbrico Ergo',
-    description: 'Ratón óptico inalámbrico con diseño ergonómico, 6 botones programables y DPI ajustable (hasta 1600).',
+    description: 'Ratón óptico inalámbrico con diseño ergonómico, 6 botones programables, DPI ajustable hasta 3200 y batería de 60 días.',
     price: 29.50,
     imageId: 'mouse',
     stock: 30,
@@ -22,7 +22,7 @@ export const products: Product[] = [
   {
     id: 'prod_003',
     name: 'Monitor Curvo 27"',
-    description: 'Monitor de 27 pulgadas con panel VA curvo, resolución Full HD, 144Hz de tasa de refresco y 1ms de tiempo de respuesta. Compatible con FreeSync.',
+    description: 'Monitor de 27 pulgadas con panel VA curvo, resolución Full HD 1080p, 144Hz de tasa de refresco y 1ms de tiempo de respuesta. Compatible con AMD FreeSync.',
     price: 299.00,
     imageId: 'monitor',
     stock: 8,
@@ -31,7 +31,7 @@ export const products: Product[] = [
   {
     id: 'prod_004',
     name: 'Auriculares Gaming 7.1',
-    description: 'Auriculares estéreo con sonido envolvente 7.1, micrófono retráctil con cancelación de ruido y almohadillas de memoria para máxima comodidad.',
+    description: 'Auriculares con sonido envolvente 7.1 virtual, micrófono retráctil con cancelación de ruido y almohadillas de memory foam para sesiones largas.',
     price: 59.99,
     imageId: 'headset',
     stock: 22,
@@ -40,7 +40,7 @@ export const products: Product[] = [
   {
     id: 'prod_005',
     name: 'Webcam HD 1080p',
-    description: 'Webcam con resolución Full HD 1080p a 30fps, enfoque automático y micrófono dual integrado. Perfecta para videollamadas y streaming.',
+    description: 'Webcam con resolución Full HD 1080p a 30fps, enfoque automático, corrección de luz y micrófono dual integrado. Perfecta para videollamadas y streaming.',
     price: 45.00,
     imageId: 'webcam',
     stock: 12,
@@ -49,33 +49,55 @@ export const products: Product[] = [
   {
     id: 'prod_006',
     name: 'Silla de Oficina ErgoMax',
-    description: 'Silla ergonómica con soporte lumbar ajustable, reposabrazos 4D y malla transpirable para máxima comodidad durante largas jornadas.',
+    description: 'Silla ergonómica con soporte lumbar ajustable, reposabrazos 4D, malla transpirable y base de aluminio. Certificada para uso de 8+ horas.',
     price: 220.00,
     imageId: 'chair',
     stock: 5,
     category: 'Muebles',
   },
+  {
+    id: 'prod_007',
+    name: 'Hub USB-C 7-en-1',
+    description: 'Hub multipuerto con HDMI 4K, 2x USB-A 3.0, USB-C PD 100W, lector SD/microSD y puerto Ethernet Gigabit. Compatible con MacBook y laptops USB-C.',
+    price: 38.99,
+    imageId: 'keyboard',
+    stock: 40,
+    category: 'Periféricos',
+  },
+  {
+    id: 'prod_008',
+    name: 'SSD Externo 1TB',
+    description: 'Unidad de estado sólido portátil con velocidades de lectura hasta 1050 MB/s, interfaz USB 3.2 Gen2, resistente a golpes y caídas hasta 2 metros.',
+    price: 79.99,
+    imageId: 'keyboard',
+    stock: 18,
+    category: 'Almacenamiento',
+  },
+  {
+    id: 'prod_009',
+    name: 'Soporte Laptop Ajustable',
+    description: 'Soporte de aluminio para laptop con 6 niveles de altura, compatible con portátiles de 10 a 17 pulgadas. Mejora la postura y la ventilación.',
+    price: 34.99,
+    imageId: 'chair',
+    stock: 25,
+    category: 'Muebles',
+  },
+  {
+    id: 'prod_010',
+    name: 'Altavoces Estéreo 2.0',
+    description: 'Altavoces de escritorio con 20W RMS, bajos reforzados, entrada auxiliar 3.5mm y control de volumen giratorio. Diseño compacto para cualquier escritorio.',
+    price: 54.00,
+    imageId: 'headset',
+    stock: 14,
+    category: 'Audio',
+  },
 ];
 
 export const categories: Category[] = [
-  {
-    id: 'cat_001',
-    name: 'Periféricos',
-    imageId: 'keyboard',
-  },
-  {
-    id: 'cat_002',
-    name: 'Monitores',
-    imageId: 'monitor',
-  },
-  {
-    id: 'cat_003',
-    name: 'Audio',
-    imageId: 'headset',
-  },
-  {
-    id: 'cat_004',
-    name: 'Muebles',
-    imageId: 'chair',
-  },
+  { id: 'cat_001', name: 'Periféricos',    imageId: 'keyboard' },
+  { id: 'cat_002', name: 'Monitores',      imageId: 'monitor'  },
+  { id: 'cat_003', name: 'Audio',          imageId: 'headset'  },
+  { id: 'cat_004', name: 'Muebles',        imageId: 'chair'    },
+  { id: 'cat_005', name: 'Cámaras',        imageId: 'webcam'   },
+  { id: 'cat_006', name: 'Almacenamiento', imageId: 'keyboard' },
 ];
