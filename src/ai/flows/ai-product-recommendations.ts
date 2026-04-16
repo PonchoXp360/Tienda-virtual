@@ -39,6 +39,7 @@ export async function getProductRecommendations(
 
 const productRecommendationsPrompt = ai.definePrompt({
   name: 'productRecommendationsPrompt',
+  model: 'googleai/gemini-pro',
   input: {schema: AIProductRecommendationsInputSchema},
   output: {schema: AIProductRecommendationsOutputSchema},
   prompt: `You are an expert e-commerce assistant whose goal is to recommend complementary or similar products based on a given product. You should provide 3 to 5 recommendations.
