@@ -20,7 +20,7 @@ export function Header() {
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
             <Logo className="h-8 w-8" />
-            <span className="hidden font-bold sm:inline-block">OmniShop</span>
+            <span className="hidden font-bold sm:inline-block">ChAcHaRiTaS</span>
           </Link>
           <nav className="hidden items-center gap-4 md:flex">
             {navLinks.map((link) => (
@@ -41,9 +41,11 @@ export function Header() {
             <span className="sr-only">Search</span>
           </Button>
           <CartIcon />
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <User className="h-6 w-6" />
-            <span className="sr-only">User Account</span>
+          <Button asChild variant="ghost" size="icon" className="hidden md:inline-flex">
+            <Link href="/dashboard">
+              <User className="h-6 w-6" />
+              <span className="sr-only">User Account</span>
+            </Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
@@ -55,7 +57,7 @@ export function Header() {
             <SheetContent side="right">
               <Link href="/" className="mr-6 flex items-center gap-2">
                 <Logo className="h-8 w-8" />
-                <span className="font-bold">OmniShop</span>
+                <span className="font-bold">ChAcHaRiTaS</span>
               </Link>
               <nav className="mt-8 flex flex-col gap-4">
                 {navLinks.map((link) => (
@@ -67,6 +69,12 @@ export function Header() {
                     {link.label}
                   </Link>
                 ))}
+                 <Link
+                    href="/dashboard"
+                    className="text-lg font-semibold text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Mi Cuenta
+                  </Link>
               </nav>
             </SheetContent>
           </Sheet>

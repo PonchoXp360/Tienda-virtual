@@ -42,7 +42,7 @@ export function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2">
               <Logo className="h-8 w-8" />
-              <span className="font-bold text-xl">OmniShop</span>
+              <span className="font-bold text-xl">ChAcHaRiTaS</span>
             </div>
             <p className="mt-4 text-sm text-muted-foreground">Tu tienda online de confianza.</p>
           </div>
@@ -66,7 +66,7 @@ export function Footer() {
         <hr className="my-8 border-border" />
         <div className="flex flex-col items-center justify-between sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} OmniShop. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} ChAcHaRiTaS. Todos los derechos reservados.
           </p>
           <div className="mt-4 flex items-center space-x-4 sm:mt-0">
             {socialLinks.map((social) => (

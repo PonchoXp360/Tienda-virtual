@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'OmniShop - Your One-Stop Online Store',
-  description: 'Explore a wide variety of products at OmniShop. Secure shopping, fast delivery, and excellent customer service.',
+  title: 'ChAcHaRiTaS - Tu Tienda de Cachivaches',
+  description: 'Encuentra tesoros y novedades. Desde gadgets curiosos hasta artículos indispensables, todo en nuestra colorida tienda online.',
 };
 
 export default function RootLayout({

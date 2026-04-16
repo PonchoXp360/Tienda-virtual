@@ -9,7 +9,7 @@ export function CategoryGrid() {
       <div className="container max-w-7xl">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Explora por Categoría
+            Nuestras Categorías
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Encuentra exactamente lo que buscas en nuestras categorías de productos.
