@@ -47,7 +47,7 @@ Here is the main product:
 Name: {{{productName}}}
 Description: {{{productDescription}}}
 Category: {{{productCategory}}}
-Price: ${{{productPrice}}}
+Price: {{{productPrice}}}
 
 Based on this product, suggest other relevant products that a customer might be interested in. Think about complementary items, upgrades, or similar alternatives. For each recommendation, provide a unique ID, a name, a brief description, a price, and a hypothetical image URL.
 `,
