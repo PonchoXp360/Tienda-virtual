@@ -1,25 +1,46 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { products } from '@/lib/data';
+import type { Metadata } from 'next';
 import { getPlaceholderImage } from '@/lib/images';
+import { getProductById, getAllProducts } from '@/lib/actions/products';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Separator } from '@/components/ui/separator';
 import { ProductRecommendations } from '@/components/product/product-recommendations';
 import AddToCartButton from './add-to-cart-button';
+import { Badge } from '@/components/ui/badge';
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-export default function ProductDetailPage({ params }: Props) {
-  const product = products.find((p) => p.id === params.id);
+// Genera rutas estáticas para todos los productos conocidos (SEO)
+export async function generateStaticParams() {
+  const products = await getAllProducts();
+  return products.map((p) => ({ id: p.id }));
+}
+
+// Metadata dinámica por producto
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProductById(id);
+  if (!product) return { title: 'Producto no encontrado' };
+  return {
+    title: `${product.name} — ChAcHaRiTaS`,
+    description: product.description,
+  };
+}
+
+export default async function ProductDetailPage({ params }: Props) {
+  const { id } = await params;
+  const product = await getProductById(id);
 
   if (!product) {
     notFound();
   }
 
   const image = getPlaceholderImage(product.imageId);
+  const isLowStock = product.stock > 0 && product.stock <= 5;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -38,6 +59,9 @@ export default function ProductDetailPage({ params }: Props) {
               />
             </div>
             <div className="flex flex-col justify-center">
+              <Badge variant="outline" className="w-fit mb-3">
+                {product.category}
+              </Badge>
               <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
                 {product.name}
               </h1>
@@ -45,9 +69,18 @@ export default function ProductDetailPage({ params }: Props) {
               <Separator className="my-6" />
               <p className="text-base text-muted-foreground">{product.description}</p>
               <div className="mt-6">
-                <p className="text-sm text-muted-foreground">
-                  Disponibilidad: <span className="font-medium text-foreground">{product.stock} en stock</span>
-                </p>
+                {product.stock === 0 ? (
+                  <p className="text-sm font-medium text-destructive">Sin existencias</p>
+                ) : isLowStock ? (
+                  <p className="text-sm font-medium text-amber-600">
+                    ¡Solo quedan {product.stock} en stock!
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Disponibilidad:{' '}
+                    <span className="font-medium text-foreground">{product.stock} en stock</span>
+                  </p>
+                )}
               </div>
               <div className="mt-8">
                 <AddToCartButton product={product} />
@@ -58,7 +91,6 @@ export default function ProductDetailPage({ params }: Props) {
           <Separator className="my-16" />
 
           <ProductRecommendations product={product} />
-
         </div>
       </main>
       <Footer />

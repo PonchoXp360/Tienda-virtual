@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { categories } from '@/lib/data';
+import { getAllCategories } from '@/lib/actions/products';
 import { getPlaceholderImage } from '@/lib/images';
 
-export function CategoryGrid() {
+export async function CategoryGrid() {
+  const categories = await getAllCategories();
   return (
     <section className="py-16 sm:py-24 bg-card">
       <div className="container max-w-7xl">

@@ -1,8 +1,8 @@
-import { products } from '@/lib/data';
+import { getFeaturedProducts } from '@/lib/actions/products';
 import { ProductCard } from '@/components/product-card';
 
-export function FeaturedProducts() {
-  const featuredProducts = products.slice(0, 4);
+export async function FeaturedProducts() {
+  const featuredProducts = await getFeaturedProducts(4);
 
   return (
     <section className="py-16 sm:py-24 bg-background">
