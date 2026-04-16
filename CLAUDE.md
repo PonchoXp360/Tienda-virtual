@@ -37,6 +37,19 @@
 
 ---
 
+## Flujo Multi-Agente (ver detalle en `~/CLAUDE.md`)
+
+| Rol | Herramienta | Responsabilidad |
+|-----|------------|-----------------|
+| UI/UX | Google Antigravity / Gemini | Diseño visual, prototipos, componentes |
+| Backend / DevSecOps | Claude Code (Sonnet) | Lógica, API, DB, seguridad, commits |
+| Fuente de verdad | GitHub (`PonchoXp360/Tienda-virtual`) | Todo cambio pasa por git |
+| Deploy | Coolify (auto) | Push a `main` → build → producción |
+
+> Claude Code **no rediseña UI** sin autorización. **Nunca edita código directo en producción.**
+
+---
+
 ## Arquitectura — Mapa de Archivos
 
 ```
