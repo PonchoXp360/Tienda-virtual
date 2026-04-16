@@ -14,10 +14,15 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-// Genera rutas estáticas para todos los productos conocidos (SEO)
+// Genera rutas estáticas. Si la DB no está disponible en build, retorna []
+// para que el build no falle (las páginas se generan on-demand).
 export async function generateStaticParams() {
-  const products = await getAllProducts();
-  return products.map((p) => ({ id: p.id }));
+  try {
+    const products = await getAllProducts();
+    return products.map((p) => ({ id: p.id }));
+  } catch {
+    return [];
+  }
 }
 
 // Metadata dinámica por producto

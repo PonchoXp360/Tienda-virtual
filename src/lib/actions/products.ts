@@ -12,6 +12,8 @@ async function getPrisma() {
   if (!process.env.DATABASE_URL) return null;
   try {
     const { prisma } = await import('@/lib/prisma');
+    // Verificar conexión con un ping
+    await prisma.$queryRaw`SELECT 1`;
     return prisma;
   } catch {
     return null;
