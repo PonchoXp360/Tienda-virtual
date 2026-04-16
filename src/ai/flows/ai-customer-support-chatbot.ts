@@ -8,6 +8,7 @@
  */
 
 import { ai } from '@/ai/genkit';
+import { googleAI } from '@genkit-ai/google-genai';
 import { z } from 'genkit';
 
 // --- Schemas ---
@@ -115,7 +116,7 @@ const getProductDetails = ai.defineTool(
 
 const customerSupportPrompt = ai.definePrompt({
   name: 'customerSupportPrompt',
-  model: 'googleai/gemini-1.0-pro',
+  model: googleAI.model('gemini-1.0-pro'),
   input: { schema: CustomerSupportPromptInputSchema },
   output: { schema: InternalChatOutputSchema },
   tools: [getProductDetails],
