@@ -48,8 +48,7 @@ export async function POST(request: Request) {
 
     case 'payment_intent.payment_failed': {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
-      console.log('[Stripe] Pago fallido:', paymentIntent.id);
-      // TODO: marcar orden como CANCELLED en BD
+      await handlePaymentFailed(paymentIntent);
       break;
     }
 
@@ -64,22 +63,39 @@ export async function POST(request: Request) {
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const userId = session.metadata?.userId;
   const stripeSessionId = session.id;
-  const total = (session.amount_total ?? 0) / 100; // convertir de centavos
+  const total = (session.amount_total ?? 0) / 100;
 
-  console.log('[Stripe] Pago completado:', { stripeSessionId, userId, total });
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    await prisma.order.upsert({
+      where: { stripeSessionId },
+      update: {
+        status: 'PAID',
+        stripePaymentId: session.payment_intent as string,
+      },
+      create: {
+        userId: userId ?? 'guest',
+        status: 'PAID',
+        total,
+        stripeSessionId,
+        stripePaymentId: session.payment_intent as string,
+      },
+    });
+    console.log('[Stripe] Orden guardada:', { stripeSessionId, userId, total });
+  } catch (err) {
+    console.error('[Stripe] Error guardando orden:', err);
+  }
+}
 
-  // TODO: cuando DATABASE_URL esté configurada, crear la orden en BD:
-  //
-  // const { prisma } = await import('@/lib/prisma');
-  // await prisma.order.upsert({
-  //   where: { stripeSessionId },
-  //   update: { status: 'PAID', stripePaymentId: session.payment_intent as string },
-  //   create: {
-  //     userId: userId ?? 'guest',
-  //     status: 'PAID',
-  //     total,
-  //     stripeSessionId,
-  //     stripePaymentId: session.payment_intent as string,
-  //   },
-  // });
+async function handlePaymentFailed(paymentIntent: Stripe.PaymentIntent) {
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    await prisma.order.updateMany({
+      where: { stripePaymentId: paymentIntent.id },
+      data: { status: 'CANCELLED' },
+    });
+    console.log('[Stripe] Orden cancelada por pago fallido:', paymentIntent.id);
+  } catch (err) {
+    console.error('[Stripe] Error cancelando orden:', err);
+  }
 }
