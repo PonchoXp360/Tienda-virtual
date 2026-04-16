@@ -69,12 +69,6 @@ export function Header() {
                     {link.label}
                   </Link>
                 ))}
-                 <Link
-                    href="/dashboard"
-                    className="text-lg font-semibold text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    Mi Cuenta
-                  </Link>
               </nav>
             </SheetContent>
           </Sheet>

@@ -10,6 +10,14 @@ export type Product = {
 
 export type Category = {
   id: string;
-  name: string;
+  name:string;
   imageId: string;
+};
+
+export type RecommendedProduct = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
 };
