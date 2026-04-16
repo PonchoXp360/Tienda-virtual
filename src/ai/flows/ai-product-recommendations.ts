@@ -9,7 +9,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
 
 const AIProductRecommendationsInputSchema = z.object({
   productName: z.string().describe('The name of the product.'),
@@ -40,7 +39,7 @@ export async function getProductRecommendations(
 
 const productRecommendationsPrompt = ai.definePrompt({
   name: 'productRecommendationsPrompt',
-  model: googleAI.model('gemini-pro'),
+  model: 'googleai/gemini-pro',
   input: {schema: AIProductRecommendationsInputSchema},
   output: {schema: AIProductRecommendationsOutputSchema},
   prompt: `You are an expert e-commerce assistant whose goal is to recommend complementary or similar products based on a given product. You should provide 3 to 5 recommendations.
