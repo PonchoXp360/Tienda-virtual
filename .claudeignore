@@ -1,0 +1,42 @@
+# ═══════════════════════════════════════════════════════
+# .claudeignore — Tienda Virtual (ChAcHaRiTaS)
+# Complementa el .claudeignore global.
+# ═══════════════════════════════════════════════════════
+
+# ── Secretos ────────────────────────────────────────────
+.env
+.env.local
+.env.production
+.env.*.local
+
+# ── Dependencias y build ─────────────────────────────────
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Genkit dev artifacts ─────────────────────────────────
+.genkit/
+
+# ── Lock file (544 KB — gasta tokens sin valor) ──────────
+package-lock.json
+
+# ── Archivos de configuración de Firebase Studio ────────
+# (apphosting.yaml y .idx/ son remanentes — no se usan en prod)
+.idx/
+.modified
+
+# ── Prisma: migraciones históricas (largas, derivables) ──
+prisma/migrations/
+
+# ── Imágenes y medios estáticos ──────────────────────────
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.webp
+**/*.ico
+**/*.svg
+public/
