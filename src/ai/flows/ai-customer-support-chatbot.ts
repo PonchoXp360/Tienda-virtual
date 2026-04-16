@@ -28,6 +28,11 @@ export type CustomerSupportChatInput = z.infer<typeof CustomerSupportChatInputSc
 const CustomerSupportChatOutputSchema = z.string().describe('The chatbot\'s response to the query.');
 export type CustomerSupportChatOutput = z.infer<typeof CustomerSupportChatOutputSchema>;
 
+const CustomerSupportPromptInputSchema = z.object({
+  input: z.string().describe("The user's query to the chatbot."),
+  currentDate: z.string().describe('The current date for context.'),
+});
+
 // --- Mock Product Data (for demonstration) ---
 const mockProducts = [
   {
@@ -105,7 +110,7 @@ const getProductDetails = ai.defineTool(
 
 const customerSupportPrompt = ai.definePrompt({
   name: 'customerSupportPrompt',
-  input: { schema: CustomerSupportChatInputSchema },
+  input: { schema: CustomerSupportPromptInputSchema },
   output: { schema: CustomerSupportChatOutputSchema },
   tools: [getProductDetails],
   system: `You are OmniShop, an AI customer support assistant. Your goal is to provide helpful and accurate information to customers.
@@ -115,7 +120,7 @@ const customerSupportPrompt = ai.definePrompt({
 - If you cannot find a product, inform the user that the product is not in the catalog.
 - Always be polite and professional.
 
-Here is the current date: {{currentDate}}.`, // Added currentDate for potential use
+Here is the current date: {{currentDate}}.`,
   prompt: `Customer Query: {{{input}}}`,
 });
 
