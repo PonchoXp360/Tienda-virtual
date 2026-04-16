@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "keyboard",
+      "description": "A mechanical keyboard with RGB lighting.",
+      "imageUrl": "https://picsum.photos/seed/keyboard/600/400",
+      "imageHint": "mechanical keyboard"
+    },
+    {
+      "id": "mouse",
+      "description": "An ergonomic wireless mouse.",
+      "imageUrl": "https://picsum.photos/seed/mouse/600/400",
+      "imageHint": "wireless mouse"
+    },
+    {
+      "id": "monitor",
+      "description": "A curved gaming monitor.",
+      "imageUrl": "https://picsum.photos/seed/monitor/600/400",
+      "imageHint": "curved monitor"
+    },
+    {
+      "id": "headset",
+      "description": "Gaming headset with a microphone.",
+      "imageUrl": "https://picsum.photos/seed/headset/600/400",
+      "imageHint": "gaming headset"
+    },
+    {
+      "id": "webcam",
+      "description": "A 1080p HD webcam.",
+      "imageUrl": "https://picsum.photos/seed/webcam/600/400",
+      "imageHint": "HD webcam"
+    },
+    {
+      "id": "chair",
+      "description": "An ergonomic office chair.",
+      "imageUrl": "https://picsum.photos/seed/chair/600/400",
+      "imageHint": "office chair"
+    },
+    {
+      "id": "hero-background",
+      "description": "Abstract background for hero section.",
+      "imageUrl": "https://picsum.photos/seed/hero-bg/1920/1080",
+      "imageHint": "abstract technology"
+    }
+  ]
 }
