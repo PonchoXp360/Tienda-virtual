@@ -47,15 +47,15 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </Link>
         </CardTitle>
-        <p className="text-sm text-muted-foreground">{product.description}</p>
+        <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <p className="text-lg font-bold text-primary">
           ${product.price.toFixed(2)}
         </p>
-        <Button size="sm" onClick={handleAddToCart}>
+        <Button size="sm" variant="secondary" onClick={handleAddToCart} disabled={product.stock === 0}>
           <ShoppingCart className="mr-2 h-4 w-4" />
-          Añadir
+          {product.stock > 0 ? 'Añadir' : 'Agotado'}
         </Button>
       </CardFooter>
     </Card>

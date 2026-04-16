@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { MapPin, CreditCard, Settings, Edit } from 'lucide-react';
+import { MapPin, CreditCard, Settings, ShoppingBag, BarChart2 } from 'lucide-react';
+import { MonthlySpendingChart } from '@/components/dashboard/monthly-spending-chart';
 
 export default function DashboardPage() {
   // Mock user data
@@ -13,22 +14,22 @@ export default function DashboardPage() {
     email: 'cliente@chacharitas.com',
     initials: 'CF',
     memberSince: 'Enero 2024',
-    avatarUrl: 'https://picsum.photos/seed/user-avatar/100/100'
+    avatarUrl: 'https://picsum.photos/seed/user-avatar-2/100/100'
   };
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1 bg-background">
-        <div className="container mx-auto max-w-6xl px-6 py-12">
+        <div className="container mx-auto max-w-7xl px-6 py-12">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-8">
             Mi Panel
           </h1>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="md:col-span-1">
-              <Card className="sticky top-24">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-1">
+              <Card className="sticky top-24 shadow-lg">
                 <CardHeader className="items-center text-center">
-                  <Avatar className="h-24 w-24 mb-4">
+                  <Avatar className="h-24 w-24 mb-4 ring-2 ring-primary ring-offset-2 ring-offset-background">
                     <AvatarImage src={user.avatarUrl} alt={user.name} />
                     <AvatarFallback>{user.initials}</AvatarFallback>
                   </Avatar>
@@ -41,55 +42,64 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
-            <div className="md:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-8">
               <Card>
                 <CardHeader>
-                  <CardTitle>Historial de Pedidos</CardTitle>
-                  <CardDescription>Revisa tus compras recientes y su estado.</CardDescription>
+                  <CardTitle>Historial de Compras</CardTitle>
+                  <CardDescription>Visualiza tus gastos mensuales recientes.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8 border-2 border-dashed rounded-lg">
-                    <p className="text-muted-foreground">No tienes pedidos recientes.</p>
-                    <Button variant="link" className="mt-2">Ver todos los pedidos</Button>
-                  </div>
+                  <MonthlySpendingChart />
                 </CardContent>
               </Card>
               
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
-                    <CardTitle>Direcciones de Envío</CardTitle>
-                    <CardDescription>Gestiona tus direcciones guardadas.</CardDescription>
+                    <CardTitle>Mis Pedidos</CardTitle>
+                    <CardDescription>Revisa tus compras recientes y su estado.</CardDescription>
                   </div>
-                   <Button variant="outline" size="icon"><MapPin className="h-4 w-4" /></Button>
+                   <Button variant="outline" size="icon"><ShoppingBag className="h-5 w-5" /></Button>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">No tienes direcciones guardadas.</p>
+                  <div className="text-center py-8 border-2 border-dashed rounded-lg">
+                    <p className="text-muted-foreground">Aún no tienes pedidos.</p>
+                    <Button variant="link" className="mt-2 text-primary">Empezar a comprar</Button>
+                  </div>
                 </CardContent>
               </Card>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Direcciones</CardTitle>
+                    <CardDescription>Gestiona tus direcciones.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground text-sm">No tienes direcciones guardadas.</p>
+                     <Button variant="secondary" className="mt-4">Añadir Dirección</Button>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
+                <Card>
+                  <CardHeader>
                     <CardTitle>Métodos de Pago</CardTitle>
-                    <CardDescription>Administra tus tarjetas de crédito/débito.</CardDescription>
-                  </div>
-                   <Button variant="outline" size="icon"><CreditCard className="h-4 w-4" /></Button>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">No tienes métodos de pago guardados.</p>
-                </CardContent>
-              </Card>
+                    <CardDescription>Administra tus tarjetas.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground text-sm">No tienes métodos de pago.</p>
+                    <Button variant="secondary" className="mt-4">Añadir Tarjeta</Button>
+                  </CardContent>
+                </Card>
+              </div>
 
                <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div>
-                    <CardTitle>Configuración</CardTitle>
-                    <CardDescription>Ajusta las preferencias de tu cuenta.</CardDescription>
-                  </div>
-                   <Button variant="outline" size="icon"><Settings className="h-4 w-4" /></Button>
+                <CardHeader>
+                  <CardTitle>Configuración de la Cuenta</CardTitle>
+                  <CardDescription>Ajusta las preferencias de tu cuenta y seguridad.</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex flex-col sm:flex-row gap-4">
+                  <Button variant="outline">Cambiar Contraseña</Button>
                   <Button variant="destructive">Cerrar Sesión</Button>
                 </CardContent>
               </Card>

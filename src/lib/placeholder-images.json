@@ -38,9 +38,9 @@
     },
     {
       "id": "hero-background",
-      "description": "Abstract background for hero section.",
-      "imageUrl": "https://picsum.photos/seed/hero-bg/1920/1080",
-      "imageHint": "abstract technology"
+      "description": "Vibrant abstract background representing fun technology.",
+      "imageUrl": "https://picsum.photos/seed/chacharitas-hero/1920/1080",
+      "imageHint": "vibrant abstract"
     }
   ]
 }

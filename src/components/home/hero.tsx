@@ -17,7 +17,7 @@ export function Hero() {
         className="object-cover"
         priority
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-secondary/40 to-transparent" />
       <div className="relative z-10 flex h-full flex-col items-center justify-end text-center text-primary-foreground">
         <div className="container max-w-3xl pb-16">
           <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl">
@@ -27,11 +27,14 @@ export function Hero() {
             Desde gadgets curiosos hasta artículos indispensables, encuentra de todo un poco en nuestra colorida tienda.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+            <Button asChild size="lg">
               <Link href="/productos">
                 Explorar Productos
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="bg-background/20 border-primary-foreground text-primary-foreground hover:bg-background/30">
+                 <Link href="/dashboard">Mi Cuenta</Link>
             </Button>
           </div>
         </div>
