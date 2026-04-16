@@ -1,6 +1,9 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
+
+// El dashboard requiere sesión activa → siempre dinámico, nunca pre-renderizado
+export const dynamic = 'force-dynamic';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

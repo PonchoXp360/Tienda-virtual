@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { stripe } from '@/lib/stripe';
+import { getStripe } from '@/lib/stripe';
 import { auth } from '@/lib/auth';
 import type { CartItem } from '@/store/cart-store';
 
@@ -33,6 +33,7 @@ export async function POST(request: Request) {
     }));
 
     // Crear sesión de pago en Stripe
+    const stripe = getStripe();
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: lineItems,
