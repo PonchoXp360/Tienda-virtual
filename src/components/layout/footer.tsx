@@ -11,9 +11,9 @@ const footerLinks = [
   {
     title: 'Productos',
     links: [
-      { name: 'Novedades', href: '#' },
-      { name: 'Más vendidos', href: '#' },
-      { name: 'Ofertas', href: '#' },
+      { name: 'Catálogo Completo', href: '/productos' },
+      { name: 'Novedades', href: '/productos' },
+      { name: 'Ofertas', href: '/productos' },
     ],
   },
   {
@@ -25,10 +25,10 @@ const footerLinks = [
     ],
   },
   {
-    title: 'Compañía',
+    title: 'Cuenta',
     links: [
-      { name: 'Sobre nosotros', href: '#' },
-      { name: 'Carreras', href: '#' },
+      { name: 'Mi Panel', href: '/dashboard' },
+      { name: 'Mis Pedidos', href: '/dashboard' },
       { name: 'Términos y condiciones', href: '#' },
     ],
   },

@@ -4,9 +4,7 @@ import { products } from '@/lib/data';
 import { getPlaceholderImage } from '@/lib/images';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart } from 'lucide-react';
 import { ProductRecommendations } from '@/components/product/product-recommendations';
 import AddToCartButton from './add-to-cart-button';
 
@@ -65,31 +63,5 @@ export default function ProductDetailPage({ params }: Props) {
       </main>
       <Footer />
     </div>
-  );
-}
-
-// Add a helper component to keep the main page as a Server Component
-'use client';
-import { useCartStore } from '@/store/cart-store';
-import { useToast } from '@/hooks/use-toast';
-import type { Product } from '@/lib/types';
-
-function AddToCartButton({ product }: { product: Product }) {
-  const { addItem } = useCartStore();
-  const { toast } = useToast();
-
-  const handleAddToCart = () => {
-    addItem(product);
-    toast({
-      title: 'Producto añadido',
-      description: `${product.name} ha sido añadido a tu carrito.`,
-    });
-  };
-
-  return (
-    <Button size="lg" onClick={handleAddToCart} disabled={product.stock === 0}>
-      <ShoppingCart className="mr-2 h-5 w-5" />
-      {product.stock > 0 ? 'Añadir al carrito' : 'Agotado'}
-    </Button>
   );
 }

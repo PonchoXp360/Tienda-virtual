@@ -1,7 +1,27 @@
+'use client';
+
+import type { FormEvent } from 'react';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function NewsletterCta() {
+  const { toast } = useToast();
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email');
+    
+    if (email) {
+      toast({
+        title: '¡Suscripción exitosa!',
+        description: 'Gracias por unirte a nuestro boletín de noticias.',
+      });
+      (event.target as HTMLFormElement).reset();
+    }
+  };
+
   return (
     <section className="py-16 sm:py-24 bg-background">
       <div className="container max-w-7xl">
@@ -13,12 +33,14 @@ export function NewsletterCta() {
             <p className="mt-4 text-lg text-primary/80">
               Suscríbete a nuestro boletín y sé el primero en conocer lanzamientos, descuentos exclusivos y noticias.
             </p>
-            <form className="mt-8 flex max-w-md mx-auto">
+            <form className="mt-8 flex max-w-md mx-auto" onSubmit={handleSubmit}>
               <Input
                 type="email"
+                name="email"
                 placeholder="Tu correo electrónico"
                 className="flex-1 rounded-r-none focus:z-10"
                 aria-label="Email address"
+                required
               />
               <Button type="submit" className="rounded-l-none bg-primary hover:bg-primary/90">
                 Suscribirme

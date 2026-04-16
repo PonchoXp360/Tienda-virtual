@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
+import { CustomerSupportChatbot } from '@/components/layout/customer-support-chatbot';
 
 export const metadata: Metadata = {
   title: 'ChAcHaRiTaS - Tu Tienda de Cachivaches',
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className="font-body antialiased bg-background text-foreground">
         {children}
         <Toaster />
+        <CustomerSupportChatbot />
       </body>
     </html>
   );
