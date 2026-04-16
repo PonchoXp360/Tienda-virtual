@@ -22,11 +22,16 @@ const ProductSchema = z.object({
   stock: z.number().int().min(0).describe('Current stock level of the product.'),
 });
 
-const CustomerSupportChatInputSchema = z.string().describe('The user\'s query to the chatbot.');
+const CustomerSupportChatInputSchema = z.string().describe("The user's query to the chatbot.");
 export type CustomerSupportChatInput = z.infer<typeof CustomerSupportChatInputSchema>;
 
-const CustomerSupportChatOutputSchema = z.string().describe('The chatbot\'s response to the query.');
-export type CustomerSupportChatOutput = z.infer<typeof CustomerSupportChatOutputSchema>;
+// The public function will still return a string
+export type CustomerSupportChatOutput = string;
+
+// Internal schema for the prompt's output, wrapped in an object to improve reliability
+const InternalChatOutputSchema = z.object({
+  response: z.string().describe("The chatbot's response to the query."),
+});
 
 const CustomerSupportPromptInputSchema = z.object({
   input: z.string().describe("The user's query to the chatbot."),
@@ -111,7 +116,7 @@ const getProductDetails = ai.defineTool(
 const customerSupportPrompt = ai.definePrompt({
   name: 'customerSupportPrompt',
   input: { schema: CustomerSupportPromptInputSchema },
-  output: { schema: CustomerSupportChatOutputSchema },
+  output: { schema: InternalChatOutputSchema },
   tools: [getProductDetails],
   system: `You are OmniShop, an AI customer support assistant. Your goal is to provide helpful and accurate information to customers.
 
@@ -119,6 +124,7 @@ const customerSupportPrompt = ai.definePrompt({
 - If a customer asks a general question, try to answer it based on your general knowledge.
 - If you cannot find a product, inform the user that the product is not in the catalog.
 - Always be polite and professional.
+- Your final answer must be a JSON object with a 'response' field containing your reply.
 
 Here is the current date: {{currentDate}}.`,
   prompt: `Customer Query: {{{input}}}`,
@@ -130,7 +136,7 @@ const customerSupportChatFlow = ai.defineFlow(
   {
     name: 'customerSupportChatFlow',
     inputSchema: CustomerSupportChatInputSchema,
-    outputSchema: CustomerSupportChatOutputSchema,
+    outputSchema: InternalChatOutputSchema,
   },
   async (input) => {
     // Provide currentDate to the prompt if needed, for context-aware responses.
@@ -146,5 +152,6 @@ const customerSupportChatFlow = ai.defineFlow(
 // --- Exported Wrapper Function ---
 
 export async function customerSupportChat(input: CustomerSupportChatInput): Promise<CustomerSupportChatOutput> {
-  return customerSupportChatFlow(input);
+  const result = await customerSupportChatFlow(input);
+  return result.response;
 }
