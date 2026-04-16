@@ -3,7 +3,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Product } from '@/lib/types';
-import { useToast } from '@/hooks/use-toast';
 
 export interface CartItem extends Product {
   quantity: number;
