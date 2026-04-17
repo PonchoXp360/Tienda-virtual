@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://placehold.co https://images.unsplash.com https://picsum.photos",
+              "img-src 'self' data: blob: https://placehold.co https://images.unsplash.com https://picsum.photos https://storage.rpyasociados.tech",
               "font-src 'self'",
               "frame-src https://js.stripe.com https://hooks.stripe.com",
               "connect-src 'self' https://api.stripe.com https://generativelanguage.googleapis.com",
@@ -39,6 +39,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'placehold.co', pathname: '/**' },
       { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
       { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
+      { protocol: 'https', hostname: 'storage.rpyasociados.tech', pathname: '/**' },
     ],
   },
 };

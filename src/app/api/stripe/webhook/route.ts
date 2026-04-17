@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
+import { sendOrderConfirmation } from '@/lib/email';
 import type Stripe from 'stripe';
 
 /**
@@ -67,7 +68,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   try {
     const { prisma } = await import('@/lib/prisma');
-    await prisma.order.upsert({
+    const order = await prisma.order.upsert({
       where: { stripeSessionId },
       update: {
         status: 'PAID',
@@ -82,6 +83,18 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       },
     });
     console.log('[Stripe] Orden guardada:', { stripeSessionId, userId, total });
+
+    // Enviar email de confirmación si hay email del cliente
+    const customerEmail = session.customer_details?.email;
+    const customerName = session.customer_details?.name ?? 'Cliente';
+    if (customerEmail && order) {
+      await sendOrderConfirmation({
+        to: customerEmail,
+        customerName,
+        orderId: order.id,
+        total,
+      });
+    }
   } catch (err) {
     console.error('[Stripe] Error guardando orden:', err);
   }

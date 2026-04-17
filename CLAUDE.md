@@ -132,7 +132,7 @@ OrderItem   → orderId, productId, quantity, price
 | `NEXT_PUBLIC_APP_URL` | URL pública (cliente) | ✅ Configurada |
 | `STRIPE_SECRET_KEY` | Stripe server (sk_test_...) | ✅ Modo test |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe cliente | ✅ Modo test |
-| `STRIPE_WEBHOOK_SECRET` | Verificar firma webhook | 🔴 `whsec_temporal123` — fake |
+| `STRIPE_WEBHOOK_SECRET` | Verificar firma webhook | ✅ `whsec_CxzU...` — real |
 | `GOOGLE_GENAI_API_KEY` | Gemini / Genkit | ✅ Configurada |
 | `RESEND_API_KEY` | Emails transaccionales | ⬜ No configurada aún |
 
@@ -204,17 +204,26 @@ OrderItem   → orderId, productId, quantity, price
 
 ---
 
-## Pendientes Críticos
+## Estado actual (verificado 2026-04-17)
+
+| Item | Estado |
+|------|--------|
+| Stripe webhook secret real | ✅ `whsec_CxzU...` activo |
+| handleCheckoutCompleted() | ✅ activo — órdenes persisten en BD |
+| Productos en DB | ✅ 10 productos, 6 categorías |
+| TypeScript | ✅ 0 errores — ignoreBuildErrors removido |
+| Stripe API version | ✅ `2026-03-25.dahlia` |
+| react-day-picker v9 | ✅ calendar.tsx migrado |
+| Security headers | ✅ X-Frame, HSTS, CSP, nosniff |
+| Último commit | `bbe2a5e` — en producción |
+
+## Pendientes activos
 
 | Prioridad | Tarea | Impacto |
 |-----------|-------|---------|
-| 🔴 | Configurar `STRIPE_WEBHOOK_SECRET` real en Coolify | Pagos no se registran en BD |
-| 🔴 | Descomentar y probar `handleCheckoutCompleted()` en webhook | Órdenes no persisten |
-| 🔴 | Cargar productos y categorías reales en BD (`npm run db:seed`) | Tienda con datos falsos |
-| 🟡 | Conectar MinIO como storage de imágenes | Imágenes son placeholders |
-| 🟡 | Configurar Resend + activar `requireEmailVerification: true` | Sin emails confirmación |
+| 🟡 | Conectar MinIO como storage de imágenes | Imágenes son placeholders externos |
+| 🟡 | Configurar Resend + activar `requireEmailVerification: true` | Sin emails de confirmación |
 | 🟡 | Implementar `payment_intent.payment_failed` en webhook | Órdenes fallidas no se cancelan |
-| 🟢 | Remover `ignoreBuildErrors/ignoreDuringBuilds` de next.config.ts | Deuda técnica de build |
 
 ---
 
