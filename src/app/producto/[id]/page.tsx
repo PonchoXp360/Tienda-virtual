@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import type { Metadata } from 'next';
-import { getPlaceholderImage } from '@/lib/images';
+import { ProductImage } from '@/components/product-image';
 import { getProductById, getAllProducts } from '@/lib/actions/products';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -44,7 +43,6 @@ export default async function ProductDetailPage({ params }: Props) {
     notFound();
   }
 
-  const image = getPlaceholderImage(product.imageId);
   const isLowStock = product.stock > 0 && product.stock <= 5;
 
   return (
@@ -54,10 +52,9 @@ export default async function ProductDetailPage({ params }: Props) {
         <div className="container mx-auto max-w-7xl px-6 py-12">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <div className="overflow-hidden rounded-lg">
-              <Image
-                src={image.imageUrl}
+              <ProductImage
+                imageId={product.imageId}
                 alt={product.name}
-                data-ai-hint={image.imageHint}
                 width={800}
                 height={600}
                 className="h-full w-full object-cover object-center transition-transform duration-300 hover:scale-105"

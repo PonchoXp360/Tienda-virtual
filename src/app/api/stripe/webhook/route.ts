@@ -67,7 +67,14 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   const total = (session.amount_total ?? 0) / 100;
 
   try {
+    const stripe = getStripe();
     const { prisma } = await import('@/lib/prisma');
+
+    // Expandir line_items para obtener productId de cada ítem
+    const sessionWithItems = await stripe.checkout.sessions.retrieve(session.id, {
+      expand: ['line_items.data.price.product'],
+    });
+
     const order = await prisma.order.upsert({
       where: { stripeSessionId },
       update: {
@@ -84,15 +91,43 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     });
     console.log('[Stripe] Orden guardada:', { stripeSessionId, userId, total });
 
-    // Enviar email de confirmación si hay email del cliente
+    // Crear OrderItems — productId viene de product_data.metadata.productId
+    const lineItems = sessionWithItems.line_items?.data ?? [];
+    for (const item of lineItems) {
+      const product = item.price?.product as Stripe.Product | null;
+      const productId = product?.metadata?.productId;
+      if (productId) {
+        await prisma.orderItem.create({
+          data: {
+            orderId: order.id,
+            productId,
+            quantity: item.quantity ?? 1,
+            price: (item.amount_total ?? 0) / 100,
+          },
+        });
+      }
+    }
+    console.log('[Stripe] OrderItems creados:', lineItems.length, 'ítems');
+
+    // Enviar email con detalle de ítems
     const customerEmail = session.customer_details?.email;
     const customerName = session.customer_details?.name ?? 'Cliente';
-    if (customerEmail && order) {
+    if (customerEmail) {
+      const itemsForEmail = lineItems
+        .map((item) => {
+          const prod = item.price?.product as Stripe.Product | null;
+          return prod
+            ? { name: prod.name, quantity: item.quantity ?? 1, price: (item.amount_total ?? 0) / 100 }
+            : null;
+        })
+        .filter(Boolean) as Array<{ name: string; quantity: number; price: number }>;
+
       await sendOrderConfirmation({
         to: customerEmail,
         customerName,
         orderId: order.id,
         total,
+        items: itemsForEmail,
       });
     }
   } catch (err) {

@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { getAllCategories } from '@/lib/actions/products';
-import { getPlaceholderImage } from '@/lib/images';
+import { ProductImage } from '@/components/product-image';
 
 export async function CategoryGrid() {
   const categories = await getAllCategories();
@@ -18,13 +17,11 @@ export async function CategoryGrid() {
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
           {categories.map((category) => {
-            const image = getPlaceholderImage(category.imageId);
             return (
               <Link href={`/productos?categoria=${category.id}`} key={category.id} className="group relative aspect-w-1 aspect-h-1 overflow-hidden rounded-lg">
-                <Image
-                  src={image.imageUrl}
+                <ProductImage
+                  imageId={category.imageId}
                   alt={category.name}
-                  data-ai-hint={image.imageHint}
                   width={400}
                   height={400}
                   className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"

@@ -6,8 +6,7 @@ import { Input } from '@/components/ui/input';
 import { searchProducts } from '@/lib/actions/products';
 import type { Product } from '@/lib/types';
 import Link from 'next/link';
-import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/images';
+import { ProductImage } from '@/components/product-image';
 import { Search, Loader2 } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { useDebounce } from '@/hooks/use-debounce';
@@ -71,7 +70,6 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             {results.length > 0 ? (
               <ul className="space-y-4">
                 {results.map((product) => {
-                  const image = getPlaceholderImage(product.imageId);
                   return (
                     <li key={product.id}>
                       <Link
@@ -79,8 +77,8 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                         className="flex items-center gap-4 p-2 rounded-lg hover:bg-accent"
                         onClick={handleSelect}
                       >
-                        <Image
-                          src={image.imageUrl}
+                        <ProductImage
+                          imageId={product.imageId}
                           alt={product.name}
                           width={48}
                           height={48}

@@ -1,9 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
-import { getPlaceholderImage } from '@/lib/images';
+import { ProductImage } from '@/components/product-image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCartStore } from '@/store/cart-store';
@@ -17,7 +16,6 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCartStore();
   const { toast } = useToast();
-  const image = getPlaceholderImage(product.imageId);
 
   const handleAddToCart = () => {
     addItem(product);
@@ -31,10 +29,9 @@ export function ProductCard({ product }: ProductCardProps) {
     <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
         <Link href={`/producto/${product.id}`} className="block overflow-hidden">
-          <Image
-            src={image.imageUrl}
+          <ProductImage
+            imageId={product.imageId}
             alt={product.name}
-            data-ai-hint={image.imageHint}
             width={600}
             height={400}
             className="aspect-[3/2] w-full object-cover transition-transform duration-300 hover:scale-105"

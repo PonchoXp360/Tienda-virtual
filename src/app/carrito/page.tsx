@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -9,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCartStore } from '@/store/cart-store';
-import { getPlaceholderImage } from '@/lib/images';
+import { ProductImage } from '@/components/product-image';
 import { Minus, Plus, Trash2, CreditCard, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -90,12 +89,11 @@ export default function CartPage() {
               <div className="lg:col-span-2">
                 <ul role="list" className="divide-y divide-border">
                   {items.map((item) => {
-                    const image = getPlaceholderImage(item.imageId);
                     return (
                       <li key={item.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-border">
-                          <Image
-                            src={image.imageUrl}
+                          <ProductImage
+                            imageId={item.imageId}
                             alt={item.name}
                             width={100}
                             height={100}

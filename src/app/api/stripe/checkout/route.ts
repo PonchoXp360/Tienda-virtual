@@ -18,16 +18,16 @@ export async function POST(request: Request) {
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:9002';
 
-    // Construir line_items para Stripe
+    // Construir line_items para Stripe — productId en metadata para recuperar en webhook
     const lineItems = items.map((item) => ({
       price_data: {
         currency: 'mxn',
         product_data: {
           name: item.name,
           description: item.description.slice(0, 200),
-          // Stripe acepta imágenes públicas; aquí las omitimos para evitar URLs de placehold.co no permitidas
+          metadata: { productId: item.id },
         },
-        unit_amount: Math.round(item.price * 100), // Stripe usa centavos
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,
     }));
