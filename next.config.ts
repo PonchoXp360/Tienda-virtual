@@ -1,13 +1,6 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true, // temporal — remover cuando TypeScript compile limpio
-  },
-  eslint: {
-    ignoreDuringBuilds: true, // temporal — remover al completar limpieza de código
-  },
-
   // ── Security Headers ─────────────────────────────────────────────────────
   async headers() {
     return [
