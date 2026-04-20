@@ -207,26 +207,31 @@ OrderItem   → orderId, productId, quantity, price
 
 ---
 
-## Estado actual (verificado 2026-04-17)
+## Estado actual (verificado 2026-04-20)
 
 | Item | Estado |
 |------|--------|
 | Stripe webhook secret real | ✅ `whsec_CxzU...` activo |
 | handleCheckoutCompleted() | ✅ activo — órdenes persisten en BD |
 | Productos en DB | ✅ 10 productos, 6 categorías |
-| TypeScript | ✅ 0 errores — ignoreBuildErrors removido |
+| TypeScript | ✅ 0 errores |
 | Stripe API version | ✅ `2026-03-25.dahlia` |
-| react-day-picker v9 | ✅ calendar.tsx migrado |
 | Security headers | ✅ X-Frame, HSTS, CSP, nosniff |
-| Último commit | `bbe2a5e` — en producción |
+| Price validation | ✅ checkout valida precios contra BD (commit 2fad27f) |
+| Rate limiting | ✅ auth (10/min) + checkout (20/min) |
+| Google OAuth button | ✅ eliminado — credenciales ausentes. Reactivar al agregar GOOGLE_CLIENT_ID |
+| Último commit | `2fad27f` — en producción |
 
 ## Pendientes activos
 
 | Prioridad | Tarea | Impacto |
 |-----------|-------|---------|
-| 🟡 | Conectar MinIO como storage de imágenes | Imágenes son placeholders externos |
-| 🟡 | Configurar Resend + activar `requireEmailVerification: true` | Sin emails de confirmación |
 | 🟡 | Implementar `payment_intent.payment_failed` en webhook | Órdenes fallidas no se cancelan |
+| 🟡 | Configurar Resend DNS (SPF/DKIM) + activar `requireEmailVerification: true` | Sin emails de confirmación |
+| 🟡 | Conectar MinIO como storage de imágenes | Imágenes son placeholders externos |
+| 🟡 | Implementar panel admin `/admin` (User.role ya en schema) | Gestión de productos y órdenes |
+| 🟢 | Agregar `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` en Coolify para reactivar OAuth | Google login opcional |
+| 🟢 | Switch Stripe de test a live (cuando aplique) | Pagos reales |
 
 ---
 
