@@ -117,7 +117,7 @@ OrderItem   → orderId, productId, quantity, price
 3. Usuario redirigido a Stripe (externo)
 4. Stripe redirige a /pago-exitoso?session_id=... o /pago-cancelado
 5. Stripe envía evento a /api/stripe/webhook (firma HMAC verificada)
-6. Webhook actualiza Order a PAID en BD (actualmente comentado — pendiente)
+6. Webhook actualiza Order a PAID en BD ✅ (handleCheckoutCompleted activo desde 2026-04-17)
 ```
 
 ---
