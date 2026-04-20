@@ -63,7 +63,7 @@ const getProductDetails = ai.defineTool(
 
 const customerSupportPrompt = ai.definePrompt({
   name: 'customerSupportPrompt',
-  model: googleAI.model('gemini-1.5-flash'),
+  model: googleAI.model('gemini-2.0-flash'),
   input: { schema: CustomerSupportPromptInputSchema },
   output: { schema: InternalChatOutputSchema },
   tools: [getProductDetails],
