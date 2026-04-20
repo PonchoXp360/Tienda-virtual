@@ -128,13 +128,16 @@ OrderItem   → orderId, productId, quantity, price
 |----------|-----------|--------|
 | `DATABASE_URL` | Conexión PostgreSQL | ✅ Configurada |
 | `BETTER_AUTH_SECRET` | Firma de sesiones | ✅ Configurada |
-| `BETTER_AUTH_URL` | URL pública de la app | ✅ Configurada |
-| `NEXT_PUBLIC_APP_URL` | URL pública (cliente) | ✅ Configurada |
-| `STRIPE_SECRET_KEY` | Stripe server (sk_test_...) | ✅ Modo test |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe cliente | ✅ Modo test |
+| `NEXT_PUBLIC_APP_URL` | URL pública (cliente + baseURL auth) | ✅ Configurada |
+| `STRIPE_SECRET_KEY` | Stripe server-side (sk_test_...) | ✅ Modo test |
 | `STRIPE_WEBHOOK_SECRET` | Verificar firma webhook | ✅ `whsec_CxzU...` — real |
-| `GOOGLE_GENAI_API_KEY` | Gemini / Genkit | ✅ Configurada |
-| `RESEND_API_KEY` | Emails transaccionales | ⬜ No configurada aún |
+| `GEMINI_API_KEY` | Gemini AI (server-side) | ✅ Configurada |
+| `RESEND_API_KEY` | Emails transaccionales | ✅ Configurada |
+| `GOOGLE_CLIENT_ID` | OAuth Google login | ⚠️ Ausente — botón Google en UI pero no funciona |
+| `GOOGLE_CLIENT_SECRET` | OAuth Google login | ⚠️ Ausente — requiere Google Cloud Console |
+| ~~`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`~~ | ~~Stripe cliente~~ | ❌ No necesaria — checkout es server-side redirect |
+| ~~`BETTER_AUTH_URL`~~ | ~~URL auth~~ | ❌ No existe — usar `NEXT_PUBLIC_APP_URL` |
+| ~~`GOOGLE_GENAI_API_KEY`~~ | ~~Gemini~~ | ❌ Nombre incorrecto — es `GEMINI_API_KEY` |
 
 ---
 
