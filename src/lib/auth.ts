@@ -13,12 +13,16 @@ export const auth = betterAuth({
     requireEmailVerification: false, // cambiar a true en producción con Resend
   },
 
-  // ─── OAuth Google ─────────────────────────────────────────
+  // ─── OAuth Google (solo activo si las credenciales están configuradas en Coolify) ──
   socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-    },
+    ...(process.env.GOOGLE_CLIENT_ID
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+          },
+        }
+      : {}),
   },
 
   // ─── Config de sesión ─────────────────────────────────────

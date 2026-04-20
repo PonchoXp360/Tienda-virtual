@@ -2,37 +2,63 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { getStripe } from '@/lib/stripe';
 import { auth } from '@/lib/auth';
-import type { CartItem } from '@/store/cart-store';
+import { prisma } from '@/lib/prisma';
+import { rateLimit } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
-    // Obtener sesión de usuario (opcional — checkout funciona sin login)
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+      request.headers.get('x-real-ip') ??
+      'unknown';
+
+    if (!rateLimit(ip, 20, 60 * 1000)) {
+      return NextResponse.json(
+        { error: 'Demasiadas solicitudes. Espera un momento.' },
+        { status: 429 }
+      );
+    }
+
     const session = await auth.api.getSession({ headers: await headers() }).catch(() => null);
 
     const body = await request.json();
-    const items: CartItem[] = body.items;
+    const clientItems: Array<{ id: string; quantity: number }> = body.items;
 
-    if (!items || items.length === 0) {
+    if (!clientItems || clientItems.length === 0) {
       return NextResponse.json({ error: 'El carrito está vacío.' }, { status: 400 });
     }
 
+    // Fetch real prices from DB — never trust client-provided prices
+    const productIds = [...new Set(clientItems.map((i) => i.id))];
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, name: true, description: true, price: true },
+    });
+
+    if (products.length !== productIds.length) {
+      return NextResponse.json({ error: 'Uno o más productos no existen.' }, { status: 400 });
+    }
+
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
+    const lineItems = clientItems.map((item) => {
+      const product = productMap.get(item.id)!;
+      return {
+        price_data: {
+          currency: 'mxn',
+          product_data: {
+            name: product.name,
+            description: product.description.slice(0, 200),
+            metadata: { productId: product.id },
+          },
+          unit_amount: Math.round(product.price * 100),
+        },
+        quantity: Math.max(1, Math.min(item.quantity, 99)),
+      };
+    });
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:9002';
 
-    // Construir line_items para Stripe — productId en metadata para recuperar en webhook
-    const lineItems = items.map((item) => ({
-      price_data: {
-        currency: 'mxn',
-        product_data: {
-          name: item.name,
-          description: item.description.slice(0, 200),
-          metadata: { productId: item.id },
-        },
-        unit_amount: Math.round(item.price * 100),
-      },
-      quantity: item.quantity,
-    }));
-
-    // Crear sesión de pago en Stripe
     const stripe = getStripe();
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: 'payment',
