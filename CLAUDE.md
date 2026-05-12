@@ -219,16 +219,19 @@ OrderItem   → orderId, productId, quantity, price
 | Price validation | ✅ checkout valida precios contra BD (commit 2fad27f) |
 | Rate limiting | ✅ auth (10/min) + checkout (20/min) |
 | Google OAuth button | ✅ eliminado — credenciales ausentes. Reactivar al agregar GOOGLE_CLIENT_ID |
-| Último commit | `2fad27f` — en producción |
+| Último commit en producción | `049b46b` (Coolify deploy roto desde 2026-05-02) |
+| Commits esperando deploy | `d9d56fb` `2548018` `02cc2a4` — en git main, pendientes |
 
 ## Pendientes activos
 
 | Prioridad | Tarea | Impacto |
 |-----------|-------|---------|
-| 🟡 | Implementar `payment_intent.payment_failed` en webhook | Órdenes fallidas no se cancelan |
+| 🔴 | Deploy pendiente — commits `d9d56fb`+`2548018`+`02cc2a4` en git pero Coolify deploy roto | Tienda en producción corre código viejo (fix de bugs no live) |
+| 🟡 | Agregar `N8N_NUEVA_ORDEN_WEBHOOK_URL` en Coolify env vars | Notificaciones Telegram de ordenes (código listo en webhook/route.ts) |
 | 🟡 | Configurar Resend DNS (SPF/DKIM) + activar `requireEmailVerification: true` | Sin emails de confirmación |
 | 🟡 | Conectar MinIO como storage de imágenes | Imágenes son placeholders externos |
 | 🟡 | Implementar panel admin `/admin` (User.role ya en schema) | Gestión de productos y órdenes |
+| ✅ | ~~Implementar `payment_intent.payment_failed`~~ — ya implementado en `handlePaymentFailed()` | — |
 | 🟢 | Agregar `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` en Coolify para reactivar OAuth | Google login opcional |
 | 🟢 | Switch Stripe de test a live (cuando aplique) | Pagos reales |
 
