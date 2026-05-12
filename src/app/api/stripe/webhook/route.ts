@@ -130,6 +130,20 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         items: itemsForEmail,
       });
     }
+
+    // Notificar a n8n (fire-and-forget — nunca bloquea el flujo principal)
+    if (process.env.N8N_NUEVA_ORDEN_WEBHOOK_URL) {
+      fetch(process.env.N8N_NUEVA_ORDEN_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order.id,
+          total,
+          customerEmail: session.customer_details?.email ?? '',
+          itemCount: lineItems.length,
+        }),
+      }).catch(() => {}); // silenciar errores — la tienda no depende de n8n
+    }
   } catch (err) {
     console.error('[Stripe] Error guardando orden:', err);
   }
