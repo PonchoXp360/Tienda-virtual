@@ -1,71 +1,75 @@
 'use server';
-/**
- * @fileOverview An AI agent that provides product recommendations based on a given product.
- *
- * - getProductRecommendations - A function that handles the product recommendation process.
- * - AIProductRecommendationsInput - The input type for the getProductRecommendations function.
- * - AIProductRecommendationsOutput - The return type for the getProductRecommendations function.
- */
 
-import {ai} from '@/ai/genkit';
-import { googleAI } from '@genkit-ai/google-genai';
-import {z} from 'genkit';
+import { getPlaceholderImage } from '@/lib/images';
+import type { RecommendedProduct } from '@/lib/types';
 
-const AIProductRecommendationsInputSchema = z.object({
-  productName: z.string().describe('The name of the product.'),
-  productDescription: z.string().describe('A detailed description of the product.'),
-  productCategory: z.string().describe('The category of the product.'),
-  productPrice: z.number().describe('The price of the product.'),
-});
-export type AIProductRecommendationsInput = z.infer<typeof AIProductRecommendationsInputSchema>;
+export type AIProductRecommendationsInput = {
+  productName: string;
+  productDescription: string;
+  productCategory: string;
+  productPrice: number;
+};
 
-const RecommendedProductSchema = z.object({
-  id: z.string().describe('The unique identifier of the recommended product.'),
-  name: z.string().describe('The name of the recommended product.'),
-  description: z.string().describe('A brief description of the recommended product.'),
-  price: z.number().describe('The price of the recommended product.'),
-  imageUrl: z.string().url().describe('The URL of the image for the recommended product.'),
-});
+export type AIProductRecommendationsOutput = {
+  recommendations: RecommendedProduct[];
+};
 
-const AIProductRecommendationsOutputSchema = z.object({
-  recommendations: z.array(RecommendedProductSchema).describe('A list of recommended products.'),
-});
-export type AIProductRecommendationsOutput = z.infer<typeof AIProductRecommendationsOutputSchema>;
+async function getPrisma() {
+  if (!process.env.DATABASE_URL) return null;
+  try {
+    const { prisma } = await import('@/lib/prisma');
+    await prisma.$queryRaw`SELECT 1`;
+    return prisma;
+  } catch {
+    return null;
+  }
+}
 
 export async function getProductRecommendations(
   input: AIProductRecommendationsInput
 ): Promise<AIProductRecommendationsOutput> {
-  return aiProductRecommendationsFlow(input);
-}
+  const prisma = await getPrisma();
+  if (!prisma) return { recommendations: [] };
 
-const productRecommendationsPrompt = ai.definePrompt({
-  name: 'productRecommendationsPrompt',
-  model: googleAI.model('gemini-2.0-flash'),
-  input: {schema: AIProductRecommendationsInputSchema},
-  output: {schema: AIProductRecommendationsOutputSchema},
-  prompt: `You are an expert e-commerce assistant whose goal is to recommend complementary or similar products based on a given product. You should provide 3 to 5 recommendations.
+  // Primero productos de la misma categoría, excluyendo el actual por nombre
+  const sameCategory = await prisma.product.findMany({
+    where: {
+      category: input.productCategory,
+      NOT: { name: input.productName },
+    },
+    take: 4,
+    orderBy: { createdAt: 'desc' },
+  });
 
-Here is the main product:
-Name: {{{productName}}}
-Description: {{{productDescription}}}
-Category: {{{productCategory}}}
-Price: {{{productPrice}}}
-
-Based on this product, suggest other relevant products that a customer might be interested in. Think about complementary items, upgrades, or similar alternatives. For each recommendation, provide a unique ID, a name, a brief description, a price, and a hypothetical image URL.
-`,
-});
-
-const aiProductRecommendationsFlow = ai.defineFlow(
-  {
-    name: 'aiProductRecommendationsFlow',
-    inputSchema: AIProductRecommendationsInputSchema,
-    outputSchema: AIProductRecommendationsOutputSchema,
-  },
-  async input => {
-    const {output} = await productRecommendationsPrompt(input);
-    if (!output) {
-      throw new Error('No recommendations generated.');
-    }
-    return output;
+  // Rellena con otras categorías si hacen falta
+  let pool = [...sameCategory];
+  if (pool.length < 4) {
+    const others = await prisma.product.findMany({
+      where: {
+        category: { not: input.productCategory },
+        NOT: { name: input.productName },
+      },
+      take: 4 - pool.length,
+      orderBy: { createdAt: 'desc' },
+    });
+    pool = [...pool, ...others];
   }
-);
+
+  const recommendations = pool.slice(0, 4).map((p) => {
+    let imageUrl = `https://picsum.photos/seed/${p.imageId}/600/400`;
+    try {
+      imageUrl = getPlaceholderImage(p.imageId).imageUrl;
+    } catch {
+      // fallback si el imageId no está registrado
+    }
+    return {
+      id: p.id,
+      name: p.name,
+      description: p.description,
+      price: p.price,
+      imageUrl,
+    };
+  });
+
+  return { recommendations };
+}

@@ -9,14 +9,14 @@ import {
 } from '@/components/ui/chart';
 import { Card } from '@/components/ui/card';
 
-const chartData = [
-  { month: 'Enero', spending: 186 },
-  { month: 'Febrero', spending: 305 },
-  { month: 'Marzo', spending: 237 },
-  { month: 'Abril', spending: 73 },
-  { month: 'Mayo', spending: 209 },
-  { month: 'Junio', spending: 214 },
-];
+type ChartDataPoint = {
+  month: string;
+  spending: number;
+};
+
+interface MonthlySpendingChartProps {
+  data: ChartDataPoint[];
+}
 
 const chartConfig = {
   spending: {
@@ -25,14 +25,22 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function MonthlySpendingChart() {
+export function MonthlySpendingChart({ data }: MonthlySpendingChartProps) {
+  if (data.every((d) => d.spending === 0)) {
+    return (
+      <p className="text-center text-sm text-muted-foreground py-8">
+        Sin compras en los últimos 6 meses.
+      </p>
+    );
+  }
+
   return (
     <Card className="p-4 border-none shadow-none">
       <ChartContainer config={chartConfig}>
         <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+          accessibilityLayer
+          data={data}
+          margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
