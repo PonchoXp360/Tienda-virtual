@@ -174,8 +174,7 @@ OrderItem   → orderId, productId, quantity, price
   agregarlas a `PROTECTED_ROUTES` en `middleware.ts`.
 
 ### 6. TypeScript estricto en lógica nueva
-- `next.config.ts` tiene `ignoreBuildErrors: true` y `ignoreDuringBuilds: true`
-  como workaround temporal de build. NO es permiso para escribir código mal tipado.
+- `next.config.ts` NO tiene `ignoreBuildErrors` — el build falla si hay errores de TS.
 - Todo código nuevo debe compilar sin errores de TypeScript.
 - No usar `any` — si el tipo es desconocido, usar `unknown` y hacer type guard.
 
