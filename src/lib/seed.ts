@@ -13,11 +13,12 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Iniciando seed de la base de datos...');
 
-  // Limpiar tablas en orden por dependencias
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.category.deleteMany();
+  // Solo sembrar si no hay datos ya (idempotente — no borra órdenes en producción)
+  const existingProducts = await prisma.product.count();
+  if (existingProducts > 0) {
+    console.log(`⏭️  ${existingProducts} productos ya existen — omitiendo seed destructivo.`);
+    return;
+  }
 
   // Sembrar categorías
   for (const category of categories) {
