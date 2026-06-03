@@ -2,13 +2,23 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import { SignOutButton } from '@/components/auth/sign-out-button';
 import { Package, ShoppingCart, Users, LayoutDashboard } from 'lucide-react';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session?.user || session.user.role !== 'admin') {
+  if (!session?.user) {
+    redirect('/login?redirect=/admin');
+  }
+
+  const dbUser = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { role: true, email: true },
+  });
+
+  if (!dbUser || dbUser.role !== 'admin') {
     redirect('/');
   }
 
@@ -41,7 +51,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </nav>
         <div className="p-3 border-t border-gray-200 dark:border-gray-800">
           <div className="px-3 py-2 text-xs text-muted-foreground mb-2 truncate">
-            {session.user.email}
+            {dbUser.email}
           </div>
           <SignOutButton />
         </div>
