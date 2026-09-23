@@ -7,7 +7,6 @@ export const dynamic = 'force-dynamic';
 export default async function AdminProductos() {
   const products = await prisma.product.findMany({
     orderBy: { createdAt: 'desc' },
-    include: { category: true },
   });
 
   return (
@@ -40,15 +39,15 @@ export default async function AdminProductos() {
                       <div className="text-xs text-muted-foreground truncate max-w-48">{product.description}</div>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant="outline">{product.category?.name ?? '—'}</Badge>
+                      <Badge variant="outline">{product.category || '—'}</Badge>
                     </td>
                     <td className="px-4 py-3 font-semibold">${Number(product.price).toFixed(2)}</td>
                     <td className="px-4 py-3">{product.stock}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        product.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                        product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                       }`}>
-                        {product.inStock ? 'Activo' : 'Sin stock'}
+                        {product.stock > 0 ? 'Activo' : 'Sin stock'}
                       </span>
                     </td>
                   </tr>
