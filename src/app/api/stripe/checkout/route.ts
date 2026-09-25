@@ -66,9 +66,7 @@ export async function POST(request: Request) {
       success_url: `${appUrl}/pago-exitoso?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/carrito?cancelled=true`,
       customer_email: session?.user?.email ?? undefined,
-      metadata: {
-        userId: session?.user?.id ?? 'guest',
-      },
+      metadata: session?.user?.id ? { userId: session.user.id } : {},
       payment_method_types: ['card'],
       locale: 'es',
     });

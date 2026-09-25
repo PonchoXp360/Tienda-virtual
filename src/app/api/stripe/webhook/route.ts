@@ -62,57 +62,85 @@ export async function POST(request: Request) {
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  const userId = session.metadata?.userId;
+  const metaUserId = session.metadata?.userId;
+  const userId = metaUserId && metaUserId !== 'guest' ? metaUserId : null;
   const stripeSessionId = session.id;
   const total = (session.amount_total ?? 0) / 100;
+  const customerEmail = session.customer_details?.email ?? session.customer_email ?? null;
+  const paymentId = typeof session.payment_intent === 'string' ? session.payment_intent : null;
+
+  let order: { id: string };
+  let created = false;
+  let lineItems: Stripe.LineItem[] = [];
 
   try {
     const stripe = getStripe();
     const { prisma } = await import('@/lib/prisma');
 
-    // Expandir line_items para obtener productId de cada ítem
     const sessionWithItems = await stripe.checkout.sessions.retrieve(session.id, {
       expand: ['line_items.data.price.product'],
     });
+    lineItems = sessionWithItems.line_items?.data ?? [];
 
-    const order = await prisma.order.upsert({
-      where: { stripeSessionId },
-      update: {
-        status: 'PAID',
-        stripePaymentId: session.payment_intent as string,
-      },
-      create: {
-        userId: userId ?? 'guest',
-        status: 'PAID',
-        total,
-        stripeSessionId,
-        stripePaymentId: session.payment_intent as string,
-      },
-    });
-    console.log('[Stripe] Orden guardada:', { stripeSessionId, userId, total });
-
-    // Crear OrderItems — productId viene de product_data.metadata.productId
-    const lineItems = sessionWithItems.line_items?.data ?? [];
-    for (const item of lineItems) {
+    const orderItems = lineItems.flatMap((item) => {
       const product = item.price?.product as Stripe.Product | null;
       const productId = product?.metadata?.productId;
-      if (productId) {
-        await prisma.orderItem.create({
+      return productId
+        ? [{ productId, quantity: item.quantity ?? 1, price: (item.amount_total ?? 0) / 100 }]
+        : [];
+    });
+
+    // Items y stock sólo se tocan cuando la orden se crea por primera vez:
+    // los reintentos de Stripe caen en la rama "ya existe".
+    const result = await prisma
+      .$transaction(async (tx) => {
+        const existing = await tx.order.findUnique({ where: { stripeSessionId } });
+        if (existing) {
+          const updated = await tx.order.update({
+            where: { id: existing.id },
+            data: { status: 'PAID', stripePaymentId: paymentId, customerEmail: existing.customerEmail ?? customerEmail },
+          });
+          return { order: updated, created: false };
+        }
+
+        const createdOrder = await tx.order.create({
           data: {
-            orderId: order.id,
-            productId,
-            quantity: item.quantity ?? 1,
-            price: (item.amount_total ?? 0) / 100,
+            userId,
+            customerEmail,
+            status: 'PAID',
+            total,
+            stripeSessionId,
+            stripePaymentId: paymentId,
+            items: { create: orderItems },
           },
         });
-      }
-    }
-    console.log('[Stripe] OrderItems creados:', lineItems.length, 'ítems');
+        for (const it of orderItems) {
+          await tx.$executeRaw`UPDATE "Product" SET stock = GREATEST(stock - ${it.quantity}, 0) WHERE id = ${it.productId}`;
+        }
+        return { order: createdOrder, created: true };
+      })
+      .catch(async (err: unknown) => {
+        // Reintento concurrente que ganó la carrera del unique(stripeSessionId)
+        if (typeof err === 'object' && err && (err as { code?: string }).code === 'P2002') {
+          const winner = await prisma.order.findUnique({ where: { stripeSessionId } });
+          if (winner) return { order: winner, created: false };
+        }
+        throw err;
+      });
 
-    // Enviar email con detalle de ítems
-    const customerEmail = session.customer_details?.email;
-    const customerName = session.customer_details?.name ?? 'Cliente';
-    if (customerEmail) {
+    order = result.order;
+    created = result.created;
+    console.log('[Stripe] Orden guardada:', { stripeSessionId, userId, total, created, items: orderItems.length });
+  } catch (err) {
+    console.error('[Stripe] Error guardando orden:', err);
+    return;
+  }
+
+  if (!created) return;
+
+  // Email y n8n son independientes: si Resend falla, n8n igual se notifica.
+  if (customerEmail) {
+    try {
       const itemsForEmail = lineItems
         .map((item) => {
           const prod = item.price?.product as Stripe.Product | null;
@@ -124,28 +152,34 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
       await sendOrderConfirmation({
         to: customerEmail,
-        customerName,
+        customerName: session.customer_details?.name ?? 'Cliente',
         orderId: order.id,
         total,
         items: itemsForEmail,
       });
+    } catch (err) {
+      console.error('[Stripe] Error enviando email de confirmación:', err);
     }
+  }
 
-    // Notificar a n8n (fire-and-forget — nunca bloquea el flujo principal)
-    if (process.env.N8N_NUEVA_ORDEN_WEBHOOK_URL) {
-      fetch(process.env.N8N_NUEVA_ORDEN_WEBHOOK_URL, {
+  if (process.env.N8N_NUEVA_ORDEN_WEBHOOK_URL) {
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (process.env.N8N_WEBHOOK_TOKEN) headers['x-rp-token'] = process.env.N8N_WEBHOOK_TOKEN;
+      await fetch(process.env.N8N_NUEVA_ORDEN_WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           orderId: order.id,
           total,
-          customerEmail: session.customer_details?.email ?? '',
+          customerEmail: customerEmail ?? '',
           itemCount: lineItems.length,
         }),
-      }).catch(() => {}); // silenciar errores — la tienda no depende de n8n
+        signal: AbortSignal.timeout(5000),
+      });
+    } catch (err) {
+      console.error('[Stripe] Aviso a n8n falló (la tienda no depende de n8n):', err);
     }
-  } catch (err) {
-    console.error('[Stripe] Error guardando orden:', err);
   }
 }
 

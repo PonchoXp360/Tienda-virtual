@@ -61,8 +61,8 @@ export default async function AdminOrdenes() {
                       {order.id.slice(0, 10)}…
                     </td>
                     <td className="px-4 py-3">
-                      <div className="font-medium">{order.user.name}</div>
-                      <div className="text-xs text-muted-foreground">{order.user.email}</div>
+                      <div className="font-medium">{order.user?.name ?? 'Invitado'}</div>
+                      <div className="text-xs text-muted-foreground">{order.user?.email ?? order.customerEmail}</div>
                     </td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">
                       {order.items.slice(0, 2).map(i => i.product.name).join(', ')}

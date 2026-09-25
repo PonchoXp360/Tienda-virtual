@@ -79,8 +79,8 @@ export default async function AdminDashboard() {
                       {order.id.slice(0, 8)}…
                     </td>
                     <td className="py-2 pr-4">
-                      <div className="font-medium">{order.user.name}</div>
-                      <div className="text-xs text-muted-foreground">{order.user.email}</div>
+                      <div className="font-medium">{order.user?.name ?? 'Invitado'}</div>
+                      <div className="text-xs text-muted-foreground">{order.user?.email ?? order.customerEmail}</div>
                     </td>
                     <td className="py-2 pr-4 font-semibold">${Number(order.total).toFixed(2)}</td>
                     <td className="py-2 pr-4">
