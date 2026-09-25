@@ -23,8 +23,7 @@ export default function CartPage() {
   }, []);
 
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = subtotal > 0 ? 5.00 : 0;
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   const handleCheckout = async () => {
     if (items.length === 0 || checkingOut) return;
@@ -167,8 +166,8 @@ export default function CartPage() {
                       <p className="text-sm font-medium">${subtotal.toFixed(2)}</p>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm text-muted-foreground">Envío estimado</p>
-                      <p className="text-sm font-medium">${shipping.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">Envío</p>
+                      <p className="text-sm text-muted-foreground">Se acuerda después de la compra</p>
                     </div>
                     <Separator />
                     <div className="flex items-center justify-between text-base font-bold">
